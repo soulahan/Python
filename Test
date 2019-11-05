@@ -1,0 +1,33 @@
+import requests
+from requests.auth import HTTPBasicAuth
+import re
+import time
+
+
+def getHTMLText(url):
+    try:
+        proxies = {
+            # "http": "http://user:password@10.10.1.10:3128/",
+        }
+        kv = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)Chrome/78.0.3904.87 Safari/537.36',
+            'Cookie': '__mta=45922971.1572940722909.1572940888876.1572940929571.5; uuid_n_v=v1; uuid=23DE8040FFA211E9BA5B752AC11D9BDE034E35428DDF4FF28F74D5279D9BA966; _csrf=246a8f7d5cda17a4ec8a8a94bae97c8081d8fe9ffb159fecb7fa4de5f893019b; _lxsdk_cuid=16e3a92b126c8-0c2995024402a5-541d3410-13c680-16e3a92b126c8; _lxsdk=23DE8040FFA211E9BA5B752AC11D9BDE034E35428DDF4FF28F74D5279D9BA966; __mta=45922971.1572940722909.1572940873891.1572940877282.5; _lxsdk_s=16e3a92b127-0a3-63a-8b1%7C%7C25'
+        }
+        r = requests.get(url, headers=kv, proxies=proxies, auth=HTTPBasicAuth('',''))
+        r.raise_for_status()
+        r.encoding = r.apparent_encoding
+        # print(r.text)
+        pattern = re.compile('<i class="board-index.*?>(.*?)</i>.*?<img data-src="(.*?)".*?<p class="name">.*?>(.*?)</a>', re.S)
+        items = re.findall(pattern, r.text)
+        for item in items:
+            print(item[0],item[1],item[2])
+
+    except:
+        return "产生异常"
+
+
+if __name__ == "__main__":
+    url = "https://maoyan.com/board/4"
+    getHTMLText(url)
+        # time.sleep(1)
+
