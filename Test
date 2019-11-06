@@ -2,6 +2,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 import re
 import time
+import json
 
 
 def getHTMLText(url):
@@ -20,14 +21,25 @@ def getHTMLText(url):
         pattern = re.compile('<i class="board-index.*?>(.*?)</i>.*?<img data-src="(.*?)".*?<p class="name">.*?>(.*?)</a>', re.S)
         items = re.findall(pattern, r.text)
         for item in items:
-            print(item[0],item[1],item[2])
-
+            yield {
+            'index':item[0],
+            'image':item[1],
+            'title':item[2]
+            }
+            # print(item[0], item[1], item[2])
     except:
         return "产生异常"
 
 
+def write_to_json(content):
+    with open('result.txt', 'wb+') as f:
+        f.write(json.dumps(content, ensure_ascii=False,).encode('utf-8'))
+
+
 if __name__ == "__main__":
     url = "https://maoyan.com/board/4"
-    getHTMLText(url)
+    html =  getHTMLText(url)
+    for item in html:
+        write_to_json(item)
         # time.sleep(1)
 
