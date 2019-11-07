@@ -12,12 +12,11 @@ def getHTMLText(url):
         }
         kv = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)Chrome/78.0.3904.87 Safari/537.36',
-            'Cookie': '__mta=45922971.1572940722909.1572940888876.1572940929571.5; uuid_n_v=v1; uuid=23DE8040FFA211E9BA5B752AC11D9BDE034E35428DDF4FF28F74D5279D9BA966; _csrf=246a8f7d5cda17a4ec8a8a94bae97c8081d8fe9ffb159fecb7fa4de5f893019b; _lxsdk_cuid=16e3a92b126c8-0c2995024402a5-541d3410-13c680-16e3a92b126c8; _lxsdk=23DE8040FFA211E9BA5B752AC11D9BDE034E35428DDF4FF28F74D5279D9BA966; __mta=45922971.1572940722909.1572940873891.1572940877282.5; _lxsdk_s=16e3a92b127-0a3-63a-8b1%7C%7C25'
+            'Cookie': '__mta=45922971.1572940722909.1572947096174.1573116216804.11; uuid_n_v=v1; uuid=23DE8040FFA211E9BA5B752AC11D9BDE034E35428DDF4FF28F74D5279D9BA966; _lxsdk_cuid=16e3a92b126c8-0c2995024402a5-541d3410-13c680-16e3a92b126c8; _lxsdk=23DE8040FFA211E9BA5B752AC11D9BDE034E35428DDF4FF28F74D5279D9BA966; __mta=45922971.1572940722909.1572940873891.1572940877282.5; _csrf=a3a8487c78d2f971c0eba5a1f090789f0c170c0e70a3ca493e3b99bda88e5609; _lxsdk_s=16e4508841c-8f-5bd-4e8%7C%7C2'
         }
         r = requests.get(url, headers=kv, proxies=proxies, auth=HTTPBasicAuth('',''))
         r.raise_for_status()
         r.encoding = r.apparent_encoding
-        # print(r.text)
         pattern = re.compile('<i class="board-index.*?>(.*?)</i>.*?<img data-src="(.*?)".*?<p class="name">.*?>(.*?)</a>', re.S)
         items = re.findall(pattern, r.text)
         for item in items:
@@ -26,20 +25,19 @@ def getHTMLText(url):
             'image':item[1],
             'title':item[2]
             }
-            # print(item[0], item[1], item[2])
     except:
         return "产生异常"
 
 
 def write_to_json(content):
-    with open('result.txt', 'wb+') as f:
-        f.write(json.dumps(content, ensure_ascii=False,).encode('utf-8'))
+    with open('result.txt', 'a', encoding='utf-8') as f:
+        f.write(str(json.dumps(content, ensure_ascii=False).encode('utf-8'),encoding='utf-8'))
 
 
 if __name__ == "__main__":
     url = "https://maoyan.com/board/4"
-    html =  getHTMLText(url)
+    html = getHTMLText(url)
     for item in html:
         write_to_json(item)
-        # time.sleep(1)
+
 
